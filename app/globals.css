@@ -1,0 +1,12 @@
+
+.page { container-type: inline-size; }
+.element-handle { position:absolute; z-index:9999; background:#fbf7ef; border:1.5px solid rgba(63,55,47,.55); box-shadow:0 2px 6px rgba(44,34,24,.13); }
+.element-handle.resize { width:11px; height:11px; right:-6px; bottom:-6px; border-radius:2px; cursor:nwse-resize; }
+.element-handle.rotate { width:10px; height:10px; left:50%; top:-20px; transform:translateX(-50%); border-radius:50%; cursor:grab; }
+.element-handle.rotate::after { content:""; position:absolute; width:1px; height:12px; background:rgba(63,55,47,.35); left:50%; top:9px; transform:translateX(-50%); }
+
+.page-zone { position:absolute; top:0; bottom:0; width:18%; z-index:25; opacity:0; border:0; background:transparent; padding:0; }
+.page-zone.left-zone { left:0; }
+.page-zone.right-zone { right:0; }
+.page-zone:disabled { cursor:default; }
+@media (max-width:700px) { .page-zone { width:30%; } }
