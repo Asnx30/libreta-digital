@@ -45,13 +45,17 @@ export function PageFlipBook({ pages }: { pages: JournalPage[] }) {
           <NotebookPage page={currentLeft} side="left" />
           <NotebookPage page={currentRight} side="right" />
         </div>
-        <div className={`flip-layer next ${direction === "next" ? "flipping-next" : ""}`}>
-          <div className="flip-shadow"><NotebookPage page={currentRight} side="right" /></div>
-          <div className="flip-back"><NotebookPage page={nextLeft} side="left" /></div>
+        <div className={`flip-clip next ${direction === "next" ? "flipping" : ""}`}>
+          <div className={`flip-layer ${direction === "next" ? "flipping-next" : ""}`}>
+            <div className="flip-shadow"><NotebookPage page={currentRight} side="right" /></div>
+            <div className="flip-back"><NotebookPage page={nextLeft} side="left" /></div>
+          </div>
         </div>
-        <div className={`flip-layer prev ${direction === "prev" ? "flipping-prev" : ""}`}>
-          <div className="flip-shadow"><NotebookPage page={currentLeft} side="left" /></div>
-          <div className="flip-back"><NotebookPage page={prevRight} side="right" /></div>
+        <div className={`flip-clip prev ${direction === "prev" ? "flipping" : ""}`}>
+          <div className={`flip-layer ${direction === "prev" ? "flipping-prev" : ""}`}>
+            <div className="flip-shadow"><NotebookPage page={currentLeft} side="left" /></div>
+            <div className="flip-back"><NotebookPage page={prevRight} side="right" /></div>
+          </div>
         </div>
         <div className="gutter" />
         <button className="page-zone left-zone" aria-label="Página anterior" disabled={!canPrev || busy} onClick={() => turn(false)} />

@@ -254,25 +254,48 @@ input, textarea, select { font-family: inherit; }
   perspective: 2400px;
 }
 
-.spread,
-.flip-layer {
+.spread {
   position: absolute;
   inset: 0;
   display: flex;
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-deep);
+  z-index: 1;
 }
 
-.spread { z-index: 1; }
+/*
+ * .flip-clip owns the rounded-corner clipping + shadow for the flipping
+ * half-page. It must NOT also carry transform-style: preserve-3d, because
+ * per spec an element with overflow != visible forces its own transform-style
+ * to "flat" — that flattened the 3D card-flip below it and leaked the
+ * mirrored backface through mid-flip. The 3D rotation lives one level down
+ * on .flip-layer, which stays overflow: visible so its preserve-3d applies.
+ */
+.flip-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-deep);
+  z-index: 3;
+  perspective: 2400px;
+}
+
+.flip-clip.next { left: auto; width: 50%; right: 0; }
+.flip-clip.prev { right: auto; width: 50%; left: 0; }
+
+.flip-clip:not(.flipping) { pointer-events: none; opacity: 0; }
 
 .flip-layer {
-  z-index: 3;
+  position: absolute;
+  inset: 0;
+  display: flex;
   transform-style: preserve-3d;
 }
 
-.flip-layer.next { transform-origin: right center; right: 0; width: 50%; }
-.flip-layer.prev { transform-origin: left center; left: 0; width: 50%; }
+.flip-clip.next .flip-layer { transform-origin: right center; }
+.flip-clip.prev .flip-layer { transform-origin: left center; }
 
 .flip-layer .flip-shadow,
 .flip-layer .flip-back {
@@ -282,24 +305,21 @@ input, textarea, select { font-family: inherit; }
   display: flex;
 }
 
-.flip-layer.next .flip-shadow,
-.flip-layer.next .flip-back { width: 200%; right: 0; }
-.flip-layer.next .flip-back { transform: rotateY(180deg); left: auto; right: -100%; }
-.flip-layer.next .flip-shadow .page { width: 100%; margin-left: auto; }
-.flip-layer.next .flip-back .page { width: 100%; }
+.flip-clip.next .flip-shadow,
+.flip-clip.next .flip-back { width: 200%; right: 0; }
+.flip-clip.next .flip-back { transform: rotateY(180deg); left: auto; right: -100%; }
+.flip-clip.next .flip-shadow .page { width: 100%; margin-left: auto; }
+.flip-clip.next .flip-back .page { width: 100%; }
 
-.flip-layer.prev .flip-shadow,
-.flip-layer.prev .flip-back { width: 200%; left: 0; }
-.flip-layer.prev .flip-back { transform: rotateY(-180deg); right: auto; left: -100%; }
-.flip-layer.prev .flip-shadow .page { width: 100%; margin-right: auto; }
-.flip-layer.prev .flip-back .page { width: 100%; }
+.flip-clip.prev .flip-shadow,
+.flip-clip.prev .flip-back { width: 200%; left: 0; }
+.flip-clip.prev .flip-back { transform: rotateY(-180deg); right: auto; left: -100%; }
+.flip-clip.prev .flip-shadow .page { width: 100%; margin-right: auto; }
+.flip-clip.prev .flip-back .page { width: 100%; }
 
-.flip-layer.next { transform: rotateY(0deg); transition: none; }
-.flip-layer.prev { transform: rotateY(0deg); transition: none; }
-.flip-layer.next.flipping-next { transition: transform 0.78s cubic-bezier(.4,.1,.2,1); transform: rotateY(-180deg); }
-.flip-layer.prev.flipping-prev { transition: transform 0.78s cubic-bezier(.4,.1,.2,1); transform: rotateY(180deg); }
-
-.flip-layer:not(.flipping-next):not(.flipping-prev) { pointer-events: none; opacity: 0; }
+.flip-layer { transform: rotateY(0deg); transition: none; }
+.flip-layer.flipping-next { transition: transform 0.78s cubic-bezier(.4,.1,.2,1); transform: rotateY(-180deg); }
+.flip-layer.flipping-prev { transition: transform 0.78s cubic-bezier(.4,.1,.2,1); transform: rotateY(180deg); }
 
 .gutter {
   position: absolute;
